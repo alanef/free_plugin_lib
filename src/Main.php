@@ -91,26 +91,22 @@ class Main {
 		?>
         <div class="wrap">
             <div class="box">
+                <div class="logo-container">
+                    <img src="path/to/logo.png" alt="Logo" class="logo">
+                </div>
                 <div class="box-content">
                     <p>Would you like to opt in to our service?</p>
                     <div class="button-group">
                         <button class="btn-optin">Opt-In</button>
                         <button class="btn-skip">Skip</button>
                     </div>
-                    <a href="#" class="details-link" onclick="toggleDetails(event)">See Details</a>
+                    <a href="#" class="details-link" id="detailsLink">See Details</a>
                     <div class="details-content" id="detailsContent">
                         <p>Here are more details about our service...</p>
                     </div>
                 </div>
             </div>
         </div>
-        <script>
-            function toggleDetails(event) {
-                event.preventDefault();
-                const detailsContent = document.getElementById('detailsContent');
-                detailsContent.style.display = detailsContent.style.display === 'none' ? 'block' : 'none';
-            }
-        </script>
 
 		<?php
 	}
