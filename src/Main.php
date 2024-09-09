@@ -114,7 +114,7 @@ class Main {
 
 	public function enqueue_assets() {
 
-		$base_url = __DIR__ . '../Assets/';
+		$base_url = plugin_dir_url(__FILE__) . '../Assets/';
 
 		// Enqueue a CSS file from the ../Assets/css directory
 		wp_enqueue_style( 'ffpl-style-css', $base_url . 'css/style.css' );
