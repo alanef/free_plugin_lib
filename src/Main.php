@@ -1,6 +1,6 @@
 <?php
 
-namespace Fullworks_Free_Plugin_lib;
+namespace Fullworks_Free_Plugin_Lib;
 
 class Main {
 	/**
