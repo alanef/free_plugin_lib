@@ -88,24 +88,36 @@ class Main {
 	}
 
 	public function render_opt_in_page() {
+        $acc="aaa";
+        echo $acc;
 		?>
-        <div class="wrap">
+            <div class="wrap">
+        <div class="fpl-wrap">
             <div class="box">
                 <div class="logo-container">
                     <img src="path/to/logo.png" alt="Logo" class="logo">
                 </div>
                 <div class="box-content">
                     <p>Would you like to opt in to our service?</p>
-                    <div class="button-group">
-                        <button class="btn-optin">Opt-In</button>
-                        <button class="btn-skip">Skip</button>
+
+                        <form method="post">
+                            <div class="button-wrap">
+	                        <?php
+	                        // Generate the nonce field
+	                        wp_nonce_field('my_form_action', 'my_form_nonce');
+	                        ?>
+                        <button class="button button-primary btn-optin" name="action" value="optin" tabindex="1" type="submit">Allow &amp; Continue</button>
+                        <button class="button button-secondary btn-skip" name="action" value="skip" tabindex="2" type="submit">Skip</button>
+                            </div>
+                                <form>
                     </div>
-                    <a href="#" class="details-link" id="detailsLink">See Details</a>
+                    <a href="#" class="details-link" id="detailsLink">Privacy & Details</a>
                     <div class="details-content" id="detailsContent">
                         <p>Here are more details about our service...</p>
                     </div>
                 </div>
             </div>
+        </div>
         </div>
 
 		<?php
