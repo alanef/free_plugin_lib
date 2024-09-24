@@ -50,10 +50,29 @@ class Main {
 
 	public function plugin_activate() {
 		if ( ! get_site_option( self::$plugin_shortname . '_form_rendered' ) ) {
-			if ( ! isset( $_GET['activate-multi'] ) ) {
-				wp_safe_redirect( admin_url( $this->settings_page ) );
+			if ( isset( $_REQUEST['_wpnonce'] ) ) {
+				$bulk_nonce   = wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk-plugins' );
+				$single_nonce = wp_verify_nonce( $_REQUEST['_wpnonce'], 'activate-plugin_' . $this->plugin_file );
+				if ( ! $bulk_nonce && ! $single_nonce ) {
+					return;
+				}
+			} else {
+				return;
 			}
+			if ( isset( $_GET['activate-multi'] ) ) {
+				return;
+			}
+			if ( isset( $_REQUEST['action'] ) &&
+			     'activate-selected' === sanitize_text_field( wp_unslash( $_REQUEST['actiom'] ) ) &&
+			     isset( $_REQUEST['checked'] ) &&
+			     is_array( $_REQUEST['checked'] ) &&
+			     count( $_REQUEST['checked'] ) > 1
+			) {
+				return;
+			}
+			wp_safe_redirect( admin_url( $this->settings_page ) );
 		}
+
 	}
 
 	public static function plugin_uninstall() {
@@ -88,36 +107,42 @@ class Main {
 	}
 
 	public function render_opt_in_page() {
-        $acc="aaa";
-        echo $acc;
+        $user =wp_get_current_user();
 		?>
-            <div class="wrap">
-        <div class="fpl-wrap">
-            <div class="box">
-                <div class="logo-container">
-                    <img src="path/to/logo.png" alt="Logo" class="logo">
-                </div>
-                <div class="box-content">
-                    <p>Would you like to opt in to our service?</p>
-
-                        <form method="post">
-                            <div class="button-wrap">
-	                        <?php
-	                        // Generate the nonce field
-	                        wp_nonce_field('my_form_action', 'my_form_nonce');
-	                        ?>
-                        <button class="button button-primary btn-optin" name="action" value="optin" tabindex="1" type="submit">Allow &amp; Continue</button>
-                        <button class="button button-secondary btn-skip" name="action" value="skip" tabindex="2" type="submit">Skip</button>
-                            </div>
-                                <form>
+        <div class="wrap">
+            <div class="fpl-wrap">
+                <div class="box">
+                    <div class="logo-container">
+                        <img src="<?php echo esc_url( plugin_dir_url( __FILE__ ) . 'Assets/images/logo.svg' ); ?>"
+                             alt="Logo" class="logo">
                     </div>
-                    <a href="#" class="details-link" id="detailsLink">Privacy & Details</a>
+                    <div class="box-content">
+                        <p>Opt in to get email notifications for security & feature updates, educational content, and occasional offers.</p>
+                        <p>By agreeing to opt in you are helping to keep this FREE plugin totally FREE</p>
+                        <label class="screen-reader-text" for="fpl_email">My Email</label>
+                        <input id="fpl_email" class="fpl_email" name="email" type="email" value="<?php echo esc_attr( $user->user_email ); ?>"
+                               aria-label="Enter your email address" />
+                        <div class="button-wrap">
+                            <div class="button-1">
+                                <button class="button button-primary btn-optin" name="action" value="optin" tabindex="1">
+                                    Allow &amp; Continue
+                                </button>
+                                <p><a href="#" class="details-link" id="detailsLink">Privacy & Details</a></p>
+                            </div>
+                            <div class="button-2">
+                                <button class="button button-secondary btn-skip" name="action" value="skip" tabindex="2">
+                                    Skip
+                                </button>
+                                <p class="small-text">If you skip this, that's okay! The plugin will still work just fine</p>
+                            </div>
+                        </div>
+                        <form>
+                    </div>
                     <div class="details-content" id="detailsContent">
                         <p>Here are more details about our service...</p>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
 
 		<?php
@@ -126,7 +151,7 @@ class Main {
 
 	public function enqueue_assets() {
 
-		$base_url = plugin_dir_url(__FILE__) . '../src/Assets/';
+		$base_url = plugin_dir_url( __FILE__ ) . '../src/Assets/';
 
 		// Enqueue a CSS file from the ../Assets/css directory
 		wp_enqueue_style( 'ffpl-style-css', $base_url . 'css/style.css' );

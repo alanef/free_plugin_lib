@@ -30,8 +30,8 @@
   transform: translateX(-50%);
 }
 .settings_page_ffpl-opt-in .fpl-wrap .logo {
-  width: 300px;
-  height: 300px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -39,10 +39,26 @@
   position: relative;
   margin-top: 60px;
 }
+.settings_page_ffpl-opt-in .fpl-wrap .box-content .fpl_email {
+  width: 100%;
+  line-height: 2.5;
+  font-size: 18px;
+}
 .settings_page_ffpl-opt-in .fpl-wrap .button-wrap {
   margin: 20px 0;
   display: flex;
   justify-content: space-between;
+}
+.settings_page_ffpl-opt-in .fpl-wrap .button-wrap .button-1 {
+  flex: 2;
+  text-align: left;
+}
+.settings_page_ffpl-opt-in .fpl-wrap .button-wrap .button-2 {
+  flex: 1;
+  text-align: right;
+}
+.settings_page_ffpl-opt-in .fpl-wrap .button-wrap .button-2 .small-text {
+  font-size: 12px;
 }
 .settings_page_ffpl-opt-in .fpl-wrap button {
   font-size: 17px;
@@ -52,7 +68,6 @@
   text-decoration: underline;
   display: block;
   margin-top: 10px;
-  float: right;
 }
 .settings_page_ffpl-opt-in .fpl-wrap .details-link:hover {
   text-decoration: none;
