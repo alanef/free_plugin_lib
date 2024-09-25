@@ -8,16 +8,18 @@
     align-items: flex-start;
     width: 100vw;
     height: 100vh;
-    padding-top: 25vh;
+    padding-top: 10vh;
     p {
       font-size: 16px;
+    }
+    @media (min-width: 960px) {
+      transform: translateX(-10vw);
     }
     .box {
       background-color: #fff;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      width: 400px;
-      max-width: 90%;
+      max-width: 400px;
       padding: 20px;
       text-align: center;
       position: relative;
