@@ -38,14 +38,14 @@ class Main {
 			$a = 1;
 		} );
 		add_action( 'admin_init', function () {
+
+		} );
+		add_action( 'admin_menu', function () {
 			if ( 'pending' === get_site_option( self::$plugin_shortname . '_form_rendered' ) ) {
 				update_site_option( self::$plugin_shortname . '_form_rendered', 'rendering' );
 				wp_safe_redirect( admin_url( 'options-general.php?page=ffpl-opt-in' ) );
 				exit;
 			}
-		} );
-		add_action( 'admin_menu', function () {
-			$a = 1;
 		} );
 
 		add_action( 'admin_menu', array( $this, 'add_settings_page' ) );
