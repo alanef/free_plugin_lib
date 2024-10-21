@@ -26,7 +26,7 @@ class Main {
 
 	public function __construct( $plugin_file, $settings_page, $plugin_shortname, $page ) {
 		self::$plugin_shortname = $plugin_shortname;
-        $x= get_site_option( self::$plugin_shortname . '_form_rendered' );
+		$x                      = get_site_option( self::$plugin_shortname . '_form_rendered' );
 		$this->page             = $page;
 		$this->plugin_file      = $plugin_file;
 		$this->settings_page    = $settings_page;
@@ -41,11 +41,7 @@ class Main {
 
 		} );
 		add_action( 'admin_menu', function () {
-			if ( 'pending' === get_site_option( self::$plugin_shortname . '_form_rendered' ) ) {
-				update_site_option( self::$plugin_shortname . '_form_rendered', 'rendering' );
-				wp_safe_redirect( admin_url( 'options-general.php?page=ffpl-opt-in' ) );
-				exit;
-			}
+
 		} );
 
 		add_action( 'admin_menu', array( $this, 'add_settings_page' ) );
@@ -55,13 +51,6 @@ class Main {
 			if ( is_admin() && $this->current_page->id === 'settings_page_ffpl-opt-in' ) {
 				add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 			}
-			/*
-						if ( is_admin() && $this->current_page->id === $this->page ) {
-							if ( ! get_site_option( self::$plugin_shortname . '_form_rendered' ) ) {
-								wp_safe_redirect( admin_url( 'options-general.php?page=ffpl-opt-in' ) );
-							}
-						}
-			*/
 		} );
 	}
 
@@ -101,7 +90,7 @@ class Main {
 			$links,
 			$settings_link
 		);
-		if ( ! get_site_option( self::$plugin_shortname . '_form_rendered' ) ) {
+		if ( 'optout' === get_site_option( self::$plugin_shortname . '_form_rendered' ) ) {
 			$settings_link = '<a href="' . esc_url( admin_url( 'options-general.php?page=ffpl-opt-in' ) ) . '" style="font-weight:900; font-size: 110%; color: #b32d2e;">' . esc_html( $this->translate( 'Opt In' ) ) . '</a>';
 			array_unshift(
 				$links,
@@ -114,7 +103,13 @@ class Main {
 
 
 	public function add_settings_page() {
-		if ( 'rendering' === get_site_option( self::$plugin_shortname . '_form_rendered' ) ) {
+		$option = get_site_option( self::$plugin_shortname . '_form_rendered' );
+		if ( 'pending' === $option ) {
+			update_site_option( self::$plugin_shortname . '_form_rendered', 'rendering' );
+			wp_safe_redirect( admin_url( 'options-general.php?page=ffpl-opt-in' ) );
+			exit;
+		}
+		if ( in_array( $option, array( 'rendering', 'optout' ) ) ) {
 			add_options_page(
 				esc_html( $this->translate( 'Opt In' ) ), // Page title
 				esc_html( $this->translate( 'Opt In' ) ), // Menu title
@@ -131,7 +126,7 @@ class Main {
 
 	public function render_opt_in_page() {
 		$user = wp_get_current_user();
-		update_site_option( self::$plugin_shortname . '_form_rendered', 'rendered' );
+		update_site_option( self::$plugin_shortname . '_form_rendered', 'optout' );
 		?>
         <div class="wrap">
             <div class="fpl-wrap">
@@ -157,10 +152,10 @@ class Main {
                                 <p><a href="#" class="details-link" id="detailsLink">Privacy & Details</a></p>
                             </div>
                             <div class="button-2">
-                                <button class="button button-secondary btn-skip" name="action" value="skip"
+                                <a href="<?php echo esc_url( $this->settings_page); ?> "class="button button-secondary btn-skip" name="action" value="skip"
                                         tabindex="2">
                                     Skip
-                                </button>
+                                </a>
                                 <p class="small-text">If you skip this, that's okay! The plugin will still work just
                                     fine</p>
                             </div>
