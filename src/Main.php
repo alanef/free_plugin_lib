@@ -52,6 +52,7 @@ class Main {
 				add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 			}
 		} );
+        add_action( 'ffpl_ad_display', array( new Classes\Advert(), 'ad_display' ) );
 	}
 
 	public function plugin_activate() {
