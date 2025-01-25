@@ -33,8 +33,7 @@ class Main {
         $this->plugin_file = $plugin_file;
         $this->settings_page = $settings_page;
         register_activation_hook($this->plugin_file, array($this, 'plugin_activate'));
-        // test @TODO remove next line
-        register_deactivation_hook($this->plugin_file, array($this, 'plugin_uninstall'));
+
         register_uninstall_hook($this->plugin_file, array('\Fullworks_Free_Plugin_Lib\Main', 'plugin_uninstall'));
         add_filter('plugin_action_links_' . $this->plugin_file, array($this, 'plugin_action_links'));
         add_action('init', array($this, 'load_text_domain'));
@@ -218,18 +217,37 @@ class Main {
     }
 
     public function handle_optin_ajax() {
-        // Set JSON header
-        header('Content-Type: application/json');
-        // check user can manage options
-        if ( ! current_user_can( 'manage_options' ) ) {
-        		wp_send_json_error( array(
-        			'message' => 'Unauthorized access'
-        		) );
-        		wp_die();
-        	}
-        check_ajax_referer('ffpl_optin_nonce', 'nonce');
+        // Verify request method
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            wp_send_json_error(['message' => 'Invalid request method']);
+            wp_die();
+        }
 
-        $email = sanitize_email($_POST['email']);
+        // Set proper headers
+        nocache_headers();
+        header('Content-Type: application/json; charset=utf-8');
+
+        // Verify user capabilities early
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error(['message' => 'Unauthorized access'], 403);
+            wp_die();
+        }
+
+        // Verify nonce with specific error message
+        if (!check_ajax_referer('ffpl_optin_nonce', 'nonce', false)) {
+            wp_send_json_error(['message' => 'Security check failed'], 403);
+            wp_die();
+        }
+
+        // Rate limiting check
+        $rate_limit_key = 'ffpl_optin_attempts_' . get_current_user_id();
+        $attempts = get_transient($rate_limit_key) ?: 0;
+        if ($attempts > 5) {
+            wp_send_json_error(['message' => 'Too many attempts. Please try again later.'], 429);
+            wp_die();
+        }
+
+        $email = sanitize_email(wp_unslash($_POST['email']));
         
         $email_handler = new Email(self::$plugin_shortname);
         $result = $email_handler->handle_optin_submission($email);

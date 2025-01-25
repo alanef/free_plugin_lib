@@ -10,26 +10,37 @@ class Email {
     }
 
     public function handle_optin_submission($email) {
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        // Enhanced email validation
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 254) {
             return false;
         }
         
+        // Prepare API endpoint with sanitization
+        $api_endpoint = esc_url_raw('https://octopus.fullworksplugins.com/wp-json/fullworks-freemius-octopusmail/v2/action');
+        $list_id = '4c6924da-03e8-11ef-b408-2f0724a38cbd';
+        $tag = sanitize_key(self::$plugin_shortname);
+        
+        // Prepare request with security headers
         $response = wp_remote_post('https://octopus.fullworksplugins.com/wp-json/fullworks-freemius-octopusmail/v2/action?list=4c6924da-03e8-11ef-b408-2f0724a38cbd&tag_free=' . self::$plugin_shortname, array(
             'headers' => array(
                 'Content-Type' => 'application/json',
+                'X-WP-Nonce' => wp_create_nonce('wp_rest'),
+                'User-Agent' => 'WordPress/' . get_bloginfo('version'),
             ),
-            'body' => json_encode(array(
+            'body' => wp_json_encode([
                 'type' => 'install.activated',
                 'objects' => array(
                     'user' => array(
                         'is_marketing_allowed' => true,
-                        'email' => $email,
+                        'email' => sanitize_email($email),
                         'first' => '',
                         'last' => ''
                     )
                 )
-            )),
-            'timeout' => 25
+            ]),
+            'timeout' => 15,
+            'sslverify' => true,
+            'blocking' => true,
         ));
 
         if (is_wp_error($response)) {

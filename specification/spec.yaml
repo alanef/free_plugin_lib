@@ -1,0 +1,189 @@
+version: "1.0"
+metadata:
+  title: "Free Plugin Library"
+  domain: "wordpress-plugins"
+  purpose: "Opt-in and upsell system for free WordPress plugins"
+  author: "Fullworks"
+  license: "GPL-2.0-or-later"
+  minStability: "stable"
+
+architecture:
+  type: "wordpress"
+  pattern: "library"
+  components:
+    namespace: "Fullworks_Free_Plugin_Lib"
+  autoload:
+    standard: "psr-4"
+
+infrastructure:
+  core:
+    requirements:
+      - "php: ^7.4"
+      - "wordpress: ^5.0"
+    compatibility:
+      multisite: true
+      gutenberg: true
+  development:
+    tools:
+      - "composer"
+    testing:
+      - "phpunit"
+      - "wp-test-suite"
+
+components:
+  - name: "Main"
+    features:
+      - "settings_page_management"
+      - "opt_in_form_handling"
+      - "plugin_activation"
+      - "text_domain_loading"
+    hooks:
+      actions:
+        - "admin_menu"
+        - "init"
+        - "admin_enqueue_scripts"
+      filters:
+        - "plugin_action_links"
+    translations:
+      domain: "free-plugin-lib"
+      loadPath: "languages"
+
+  - name: "Email"
+    features:
+      - "opt_in_validation"
+      - "api_communication"
+      - "error_handling"
+    security:
+      - "nonce_verification"
+      - "rate_limiting"
+    validation:
+      email:
+        maxLength: 254
+        filter: "FILTER_VALIDATE_EMAIL"
+
+  - name: "Advert"
+    features:
+      - "premium_promotion"
+      - "responsive_display"
+      - "accessibility"
+    conditions:
+      - "premium_not_installed"
+    assets:
+      images:
+        - "logo.svg"
+        - "anti-spam-01.png"
+
+  - name: "Security"
+    features:
+      - "nonce_management"
+      - "rate_limiting"
+      - "ip_protection"
+      - "security_headers"
+    rateLimit:
+      storage: "transient"
+      keyPrefix: "ffpl_rate_limit"
+
+assets:
+  styles:
+    - name: "opt-in-form"
+      type: "scss"
+      responsive: true
+      minify: true
+  scripts:
+    - name: "main"
+      dependencies: ["jquery"]
+      localization:
+        name: "ffplData"
+        data:
+          - "ajaxurl"
+          - "nonce"
+          - "settings_page"
+
+apis:
+  external:
+    - name: "octopus"
+      endpoint: "fullworksplugins.com"
+      auth: "nonce"
+      timeout: 15
+      version: "v2"
+      retry:
+        attempts: 3
+        backoff: "exponential"
+
+compliance:
+  wordpress_org:
+    - "explicit_consent_required"
+    - "no_automatic_downloads"
+    - "clear_privacy_policy"
+    - "no_intrusive_notifications"
+  gdpr:
+    - "data_minimization"
+    - "explicit_consent"
+    - "right_to_erasure"
+
+dataModel:
+  options:
+    - name: "form_rendered"
+      scope: "site"
+      values: ["pending", "rendering", "optout", "optin"]
+      autoload: true
+    - name: "rate_limit_attempts"
+      scope: "transient"
+      expiry: 3600
+
+security:
+  form_submission:
+    nonce: true
+    rate_limit:
+      max_attempts: 5
+      timeframe: 3600
+    headers:
+      - "X-Content-Type-Options: nosniff"
+      - "X-Frame-Options: SAMEORIGIN"
+      - "X-XSS-Protection: 1; mode=block"
+
+error_handling:
+  logging: true
+  fail_silently: false
+  wp_debug_override: false
+
+
+testing:
+  unit_tests:
+    framework: "phpunit"
+    coverage_threshold: 80
+
+  feature_tests:
+    - name: "opt_in_flow"
+      scenarios:
+        - "New plugin activation shows opt-in form"
+        - "Email validation rejects invalid formats"
+        - "Successful opt-in redirects to settings page"
+        - "Rate limiting blocks excessive submissions"
+        - "Form renders correctly on mobile devices"
+
+    - name: "settings_page"
+      scenarios:
+        - "Settings link appears in plugin actions"
+        - "Opt-in status persists across sessions"
+        - "Premium ad displays when pro not installed"
+        - "Premium ad hides when pro is active"
+
+    - name: "security"
+      scenarios:
+        - "AJAX calls require valid nonce"
+        - "Rate limiting prevents brute force"
+        - "IP detection handles proxy configurations"
+        - "Security headers set correctly"
+
+    - name: "multisite"
+      scenarios:
+        - "Options save network-wide"
+        - "Activation works on subsite installs"
+        - "Form state syncs across network"
+
+    - name: "internationalization"
+      scenarios:
+        - "Strings load from translation files"
+        - "RTL layout renders correctly"
+        - "Date formats respect locale"

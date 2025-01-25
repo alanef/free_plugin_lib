@@ -11,6 +11,17 @@
     }
   ],
   "autoload": {
-    "psr-4": {"Fullworks_Free_Plugin_Lib\\": "src/"}
+    "psr-4": {
+      "Fullworks_Free_Plugin_Lib\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Fullworks_Free_Plugin_Lib\\Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.0",
+    "codedungeon/phpunit-result-printer": "^0.32"
   }
 }
