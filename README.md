@@ -18,10 +18,10 @@ This library is designed to be integrated into free WordPress plugins, providing
 This library is available via **Packagist**. To install it in your WordPress plugin, use Composer:
 
 ```bash
-composer require alanef/free_plugin_lib --no-dev
+composer require alanef/free_plugin_lib
 ```
 
-The `--no-dev` flag ensures that only production-ready code is installed, excluding development assets like tests and CI configurations.
+When you build for plugin release use `composer update --no-dev` flag ensures that only production-ready code is installed, excluding development assets like tests and CI configurations.
 
 ---
 
