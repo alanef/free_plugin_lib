@@ -1,7 +1,3 @@
-Here’s a rewritten `README.md` that assumes your library will be distributed via **Packagist**. It provides clear instructions for installation, usage, and contribution, while emphasizing that development assets are excluded from the production version.
-
----
-
 # Free Plugin Library for WordPress
 
 This library is designed to be integrated into free WordPress plugins, providing essential features such as opt-in forms, settings page management, and promotional content for premium plugins. It is distributed via **Packagist** and complies with WordPress.org guidelines.
