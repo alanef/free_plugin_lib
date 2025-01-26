@@ -21,17 +21,6 @@ fi
 
 echo "Extracted version: $VERSION"
 
-# Update composer.json
-if [ -f "composer.json" ]; then
-
-  # Update the version in composer.json
-  sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" composer.json
-  echo "Updated composer.json with version: $VERSION"
-else
-  echo "Error: composer.json not found."
-  exit 1
-fi
-
 # Update package.json (if it exists)
 if [ -f "package.json" ]; then
 
