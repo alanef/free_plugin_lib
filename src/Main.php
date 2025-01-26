@@ -10,6 +10,10 @@ class Main {
      */
     private static $plugin_shortname;
     /**
+     * @var string
+     */
+    private static $version = '1.0.0';
+    /**
      * @var mixed
      */
     private $page;
@@ -203,10 +207,10 @@ class Main {
         $base_url = plugin_dir_url(__FILE__) . '../src/Assets/';
 
         // Enqueue a CSS file from the ../Assets/css directory
-        wp_enqueue_style('ffpl-style-css', $base_url . 'css/style.css');
+        wp_enqueue_style('ffpl-style-css', $base_url . 'css/style.css', array(), self::$version, 'all');
 
         // Enqueue a JavaScript file from the ../Assets/scripts directory
-        wp_enqueue_script('ffpl-main-js', $base_url . 'scripts/main.js', array('jquery'), false, true);
+        wp_enqueue_script('ffpl-main-js', $base_url . 'scripts/main.js', array('jquery'), self::$version, true);
 
         // Localize script with necessary data
         wp_localize_script('ffpl-main-js', 'ffplData', array(

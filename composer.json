@@ -2,6 +2,7 @@
   "name": "alanef/free_plugin_lib",
   "description": "A library to add to free plugins, in compliance with wp.org",
   "type": "library",
+  "version": "1.0.0",
   "minimum-stability": "stable",
   "license": "GPL-2.0-or-later",
   "authors": [
@@ -22,6 +23,8 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^9.0",
-    "codedungeon/phpunit-result-printer": "^0.32"
+    "codedungeon/phpunit-result-printer": "^0.32",
+    "yoast/wp-test-utils": "^1.2",
+    "wp-phpunit/wp-phpunit": "^6.7"
   }
 }
