@@ -1,6 +1,6 @@
 {
   "name": "alanef/free_plugin_lib",
-  "description": "A library to add to free plugins, in compliance with wp.org",
+  "description": "Library to add to free plugins, in compliance with wp.org",
   "type": "library",
   "minimum-stability": "stable",
   "license": "GPL-2.0-or-later",
