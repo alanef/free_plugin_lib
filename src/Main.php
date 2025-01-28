@@ -183,7 +183,7 @@ class Main {
                         </ul>
 
                         <p class="privacy-links">
-                            <a href="https://example.com/privacy-policy" target="_blank">View our full Privacy
+                            <a href="https://fullworksplugins.com/free-plugin-opt-in-privacy-policy/" target="_blank">View our full Privacy
                                 Policy</a>
                         </p>
                     </div>

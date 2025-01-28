@@ -28,15 +28,20 @@ class Email {
                 'User-Agent' => 'WordPress/' . get_bloginfo('version'),
             ),
             'body' => wp_json_encode([
-                'type' => 'install.activated',
-                'objects' => array(
-                    'user' => array(
-                        'is_marketing_allowed' => true,
-                        'email' => sanitize_email($email),
-                        'first' => '',
-                        'last' => ''
-                    )
-                )
+	            'type' => 'user.marketing.opted_in',
+	            'plugin_id' => '1330',
+	            'is_live' => true,
+	            'objects' => [
+		            'user' => [
+			            'is_marketing_allowed' => true,
+			            'email' => sanitize_email($email),
+			            'first' => '',
+			            'last' => '',
+			            'ip' =>  Security::get_client_ip(),
+			            'plugin_shortname' => self::$plugin_shortname,
+			            'source' => get_site_url(),
+		            ]
+	            ]
             ]),
             'timeout' => 15,
             'sslverify' => true,

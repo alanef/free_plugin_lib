@@ -40,7 +40,7 @@ class Security {
      *
      * @return string
      */
-    private static function get_client_ip() {
+    public static function get_client_ip() {
         $ip = '127.0.0.1';
         
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
