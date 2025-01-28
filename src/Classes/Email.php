@@ -24,7 +24,6 @@ class Email {
         $response = wp_remote_post('https://octopus.fullworksplugins.com/wp-json/fullworks-freemius-octopusmail/v2/action?list=4c6924da-03e8-11ef-b408-2f0724a38cbd&tag_free=' . self::$plugin_shortname, array(
             'headers' => array(
                 'Content-Type' => 'application/json',
-                'X-WP-Nonce' => wp_create_nonce('wp_rest'),
                 'User-Agent' => 'WordPress/' . get_bloginfo('version'),
             ),
             'body' => wp_json_encode([
