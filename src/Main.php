@@ -262,9 +262,10 @@ class Main {
                 'redirect_url' => $this->settings_page
             ));
         } else {
-            wp_send_json_error(array(
-                'message' => 'Invalid email address'
-            ));
+	        update_site_option(self::$plugin_shortname . '_form_rendered', 'optout');
+	        wp_send_json_success(array(
+		        'redirect_url' => $this->settings_page
+	        ));
         }
         wp_die();
     }
