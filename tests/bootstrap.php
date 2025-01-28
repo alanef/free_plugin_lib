@@ -202,7 +202,7 @@ if ( ! function_exists( 'plugin_dir_url' ) ) {
 		return 'http://test.com/wp-content/plugins/' . basename( dirname( $file ) ) . '/';
 	}
 }
-if ( ! function_exists( 'get_site_url' ) ) {
+if ( ! function_exists( 'xget_site_url' ) ) {
 	function get_site_url( ) {
 		return 'http://test.com/';
 	}
