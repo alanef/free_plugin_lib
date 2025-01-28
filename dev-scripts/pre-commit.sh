@@ -10,7 +10,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Version sync successful. Proceeding with commit."
-exit 0
+
 
 ./vendor/bin/phpunit   tests
 
@@ -19,5 +19,5 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo "Tests Suceeded. Proceeding with commit."
+echo "Tests Succeeded. Proceeding with commit."
 exit 0
