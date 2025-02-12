@@ -119,7 +119,8 @@ class Main {
 	}
 
 	public function load_text_domain() {
-		load_plugin_textdomain('free-plugin-lib', false, __DIR__ . '../languages');
+		$rel_path = dirname(plugin_basename(__DIR__));
+		load_plugin_textdomain('free-plugin-lib', false,  $rel_path = dirname(plugin_basename(__DIR__)) . '/src/languages');
 	}
 
 	public function render_opt_in_page() {
