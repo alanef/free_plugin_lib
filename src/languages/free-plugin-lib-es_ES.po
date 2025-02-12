@@ -61,7 +61,7 @@ msgid "just for our community"
 msgstr "exclusivas para nuestra comunidad"
 
 #: Main.php
-msgid "By opting in, you\\'re directly"
+msgid "By opting in, you're directly"
 msgstr "Al suscribirte, estás directamente"
 
 #: Main.php
@@ -101,11 +101,11 @@ msgid "Skip"
 msgstr "Omitir"
 
 #: Main.php
-msgid "If you skip this, that\\'s okay! The plugin will still work just fine"
+msgid "If you skip this, that's okay! The plugin will still work just fine"
 msgstr "¡No te preocupes si lo omites! El plugin seguirá funcionando perfectamente"
 
 #: Main.php
-msgid "Communications You\\'ll Receive:"
+msgid "Communications You'll Receive:"
 msgstr "Comunicaciones que recibirás:"
 
 #: Main.php
