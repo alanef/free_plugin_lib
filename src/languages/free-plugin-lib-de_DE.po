@@ -5,7 +5,7 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: es_ES\n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,11 +14,11 @@ msgstr ""
 
 #: Main.php
 msgid "Settings"
-msgstr "Ajustes"
+msgstr "Einstellungen"
 
 #: Main.php
 msgid "Opt In"
-msgstr "Suscribirse"
+msgstr "Anmelden"
 
 #: Main.php
 msgid "Logo"
@@ -26,188 +26,188 @@ msgstr "Logo"
 
 #: Main.php
 msgid "Opt In to Stay Updated"
-msgstr "Suscríbete para mantenerte actualizado"
+msgstr "Melden Sie sich an, um auf dem Laufenden zu bleiben"
 
 #: Main.php
 msgid "Stay in the loop with"
-msgstr "Mantente al día con"
+msgstr "Bleiben Sie informiert über"
 
 #: Main.php
 msgid "essential updates"
-msgstr "actualizaciones esenciales"
+msgstr "wichtige Aktualisierungen"
 
 #: Main.php
 msgid "Opt in to receive notifications for"
-msgstr "Suscríbete para recibir notificaciones sobre"
+msgstr "Melden Sie sich an für Benachrichtigungen über"
 
 #: Main.php
 msgid "security and feature updates"
-msgstr "actualizaciones de seguridad y nuevas funciones"
+msgstr "Sicherheits- und Funktionsupdates"
 
 #: Main.php
 msgid "expert tips"
-msgstr "consejos de expertos"
+msgstr "Expertentipps"
 
 #: Main.php
 msgid "to get the most out of your plugin, and"
-msgstr "para aprovechar al máximo tu plugin, y"
+msgstr "um Ihr Plugin optimal zu nutzen, und"
 
 #: Main.php
 msgid "exclusive offers"
-msgstr "ofertas exclusivas"
+msgstr "exklusive Angebote"
 
 #: Main.php
 msgid "just for our community"
-msgstr "exclusivas para nuestra comunidad"
+msgstr "exklusiv für unsere Community"
 
 #: Main.php
 msgid "By opting in, you\\'re directly"
-msgstr "Al suscribirte, estás directamente"
+msgstr "Mit Ihrer Anmeldung"
 
 #: Main.php
 msgid "supporting us"
-msgstr "apoyándonos"
+msgstr "unterstützen Sie uns"
 
 #: Main.php
 msgid "in keeping"
-msgstr "a mantener"
+msgstr "dabei"
 
 #: Main.php
 msgid "FREE"
-msgstr "GRATUITO"
+msgstr "KOSTENLOS"
 
 #: Main.php
 msgid "for everyone. Thank you for helping us grow and improve together!"
-msgstr "para todos. ¡Gracias por ayudarnos a crecer y mejorar juntos!"
+msgstr "für alle verfügbar zu halten. Vielen Dank für Ihre Unterstützung!"
 
 #: Main.php
 msgid "My Email"
-msgstr "Mi correo electrónico"
+msgstr "Meine E-Mail-Adresse"
 
 #: Main.php
 msgid "Enter your email address"
-msgstr "Introduce tu correo electrónico"
+msgstr "Geben Sie Ihre E-Mail-Adresse ein"
 
 #: Main.php
 msgid "Allow & Continue"
-msgstr "Aceptar y continuar"
+msgstr "Zustimmen & Fortfahren"
 
 #: Main.php
 msgid "Privacy & Details"
-msgstr "Privacidad y detalles"
+msgstr "Datenschutz & Details"
 
 #: Main.php
 msgid "Skip"
-msgstr "Omitir"
+msgstr "Überspringen"
 
 #: Main.php
 msgid "If you skip this, that\\'s okay! The plugin will still work just fine"
-msgstr "¡No te preocupes si lo omites! El plugin seguirá funcionando perfectamente"
+msgstr "Kein Problem, wenn Sie dies überspringen! Das Plugin funktioniert trotzdem einwandfrei"
 
 #: Main.php
 msgid "Communications You\\'ll Receive:"
-msgstr "Comunicaciones que recibirás:"
+msgstr "Diese Mitteilungen erhalten Sie:"
 
 #: Main.php
 msgid "Security updates and critical patches"
-msgstr "Actualizaciones de seguridad y parches críticos"
+msgstr "Sicherheitsupdates und wichtige Patches"
 
 #: Main.php
 msgid "New feature announcements"
-msgstr "Anuncios de nuevas características"
+msgstr "Ankündigungen neuer Funktionen"
 
 #: Main.php
 msgid "WordPress tips and best practices"
-msgstr "Consejos y mejores prácticas de WordPress"
+msgstr "WordPress-Tipps und Best Practices"
 
 #: Main.php
 msgid "Occasional special offers"
-msgstr "Ofertas especiales ocasionales"
+msgstr "Gelegentliche Sonderangebote"
 
 #: Main.php
 msgid "How We Protect Your Privacy:"
-msgstr "Cómo protegemos tu privacidad:"
+msgstr "So schützen wir Ihre Privatsphäre:"
 
 #: Main.php
 msgid "Your email is stored securely and never shared with third parties"
-msgstr "Tu correo electrónico se almacena de forma segura y nunca se comparte con terceros"
+msgstr "Ihre E-Mail-Adresse wird sicher gespeichert und nie an Dritte weitergegeben"
 
 #: Main.php
 msgid "We send no more than one email per week, except in the case of security issues"
-msgstr "No enviamos más de un correo electrónico por semana, excepto en casos de problemas de seguridad"
+msgstr "Wir senden maximal eine E-Mail pro Woche, außer bei Sicherheitsproblemen"
 
 #: Main.php
 msgid "You can unsubscribe instantly at any time"
-msgstr "Puedes cancelar tu suscripción en cualquier momento"
+msgstr "Sie können sich jederzeit sofort abmelden"
 
 #: Main.php
 msgid "We only collect your email address - nothing else"
-msgstr "Solo recopilamos tu correo electrónico, nada más"
+msgstr "Wir erfassen nur Ihre E-Mail-Adresse - sonst nichts"
 
 #: Main.php
 msgid "Data is stored in secure servers within the EU"
-msgstr "Los datos se almacenan en servidores seguros dentro de la UE"
+msgstr "Die Daten werden auf sicheren Servern innerhalb der EU gespeichert"
 
 #: Main.php
 msgid "View our full Privacy Policy"
-msgstr "Ver nuestra política de privacidad completa"
+msgstr "Vollständige Datenschutzerklärung anzeigen"
 
 #: Main.php
 msgid "Invalid request method"
-msgstr "Método de solicitud no válido"
+msgstr "Ungültige Anfragemethode"
 
 #: Main.php
 msgid "Unauthorized access"
-msgstr "Acceso no autorizado"
+msgstr "Nicht autorisierter Zugriff"
 
 #: Main.php
 msgid "Security check failed"
-msgstr "Falló la verificación de seguridad"
+msgstr "Sicherheitsüberprüfung fehlgeschlagen"
 
 #: Main.php
 msgid "Too many attempts. Please try again later."
-msgstr "Demasiados intentos. Por favor, inténtalo de nuevo más tarde"
+msgstr "Zu viele Versuche. Bitte versuchen Sie es später erneut"
 
 #: Classes/Advert.php
 msgid "Premium Plugin Advertisement"
-msgstr "Anuncio del plugin premium"
+msgstr "Premium-Plugin-Werbung"
 
 #: Classes/Advert.php
 msgid "Anti-Spam Premium Plugin Features"
-msgstr "Características del plugin antispam premium"
+msgstr "Anti-Spam Premium-Plugin Funktionen"
 
 #: Classes/Advert.php
 msgid "Keep this FREE Plugin FREE"
-msgstr "Mantén este plugin GRATUITO"
+msgstr "Helfen Sie uns, dieses Plugin KOSTENLOS zu halten"
 
 #: Classes/Advert.php
 msgid "By Supporting the Developer and Upgrading to Anti-Spam Premium"
-msgstr "Apoyando al desarrollador y actualizando a Anti-Spam Premium"
+msgstr "Unterstützen Sie den Entwickler durch ein Upgrade auf Anti-Spam Premium"
 
 #: Classes/Advert.php
 msgid "Advanced spam protection"
-msgstr "Protección avanzada contra spam"
+msgstr "Erweiterter Spam-Schutz"
 
 #: Classes/Advert.php
 msgid "Autointegration to most Forms Packages"
-msgstr "Autointegración con la mayoría de los formularios"
+msgstr "Automatische Integration in die meisten Formular-Pakete"
 
 #: Classes/Advert.php
 msgid "Real-time threat detection"
-msgstr "Detección de amenazas en tiempo real"
+msgstr "Echtzeit-Bedrohungserkennung"
 
 #: Classes/Advert.php
 msgid "Premium support"
-msgstr "Soporte premium"
+msgstr "Premium-Support"
 
 #: Classes/Advert.php
 msgid "FREE Trial"
-msgstr "Prueba GRATUITA"
+msgstr "KOSTENLOSE Testversion"
 
 #: Classes/Advert.php
 msgid "Learn more about Anti-Spam Premium features"
-msgstr "Más información sobre las funciones premium de antispam"
+msgstr "Erfahren Sie mehr über die Anti-Spam Premium-Funktionen"
 
 #: Classes/Advert.php
 msgid "Show your Support & Learn More"
-msgstr "Muestra tu apoyo y obtén más información"
+msgstr "Zeigen Sie Ihre Unterstützung & erfahren Sie mehr"

@@ -116,6 +116,11 @@ if ( ! function_exists( 'esc_html' ) ) {
 		return htmlspecialchars( $text, ENT_QUOTES, 'UTF-8' );
 	}
 }
+if ( ! function_exists( 'esc_attr' ) ) {
+	function esc_attr( $text ) {
+		return htmlspecialchars( $text, ENT_QUOTES, 'UTF-8' );
+	}
+}
 
 if ( ! function_exists( 'sanitize_email' ) ) {
 	function sanitize_email( $email ) {
