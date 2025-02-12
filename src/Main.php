@@ -88,7 +88,7 @@ class Main {
             $links,
             $settings_link
         );
-        if ('optout' === get_site_option(self::$plugin_shortname . '_form_rendered')) {
+        if ('optout' === get_site_option(self::$plugin_shortname . '_form_rendered', 'optout')) {
             $settings_link = '<a href="' . esc_url(admin_url('options-general.php?page=ffpl-opt-in')) . '" style="font-weight:900; font-size: 110%; color: #b32d2e;">' . esc_html($this->translate('Opt In')) . '</a>';
             array_unshift(
                 $links,
