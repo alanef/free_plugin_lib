@@ -18,7 +18,8 @@ class MainTest extends TestCase
 			$this->plugin_file,
 			$this->settings_page,
 			$this->plugin_shortname,
-			'test_page'
+			'test_page',
+			'Plugin Name'
 		);
 	}
 
