@@ -37,8 +37,9 @@ $plugin_file = __FILE__;
 $settings_page = 'options-general.php?page=your-plugin-settings';
 $plugin_shortname = 'your_plugin_shortname';
 $page = 'your-plugin-page';
+$plugin_name = 'your-plugin-name';
 
-$plugin_lib = new Main($plugin_file, $settings_page, $plugin_shortname, $page);
+$plugin_lib = new Main($plugin_file, $settings_page, $plugin_shortname, $page, $plugin_name);
 ```
 
 ### Opt-in Form
