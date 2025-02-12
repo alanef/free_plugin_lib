@@ -101,7 +101,7 @@ class Main {
 
 
     public function add_settings_page() {
-        $option = get_site_option(self::$plugin_shortname . '_form_rendered');
+        $option = get_site_option(self::$plugin_shortname . '_form_rendered', 'optout');
         if ('pending' === $option) {
             update_site_option(self::$plugin_shortname . '_form_rendered', 'rendering');
             wp_safe_redirect(admin_url('options-general.php?page=ffpl-opt-in'));
