@@ -109,10 +109,10 @@ class Main {
 		}
 		if (in_array($option, array('rendering', 'optout'))) {
 			add_options_page(
-				esc_html($this->translate('Opt In')), // Page title
-				esc_html($this->translate('Opt In')), // Menu title
+				esc_html($this->translate('Opt In ')) . esc_html( $this->plugin_name), // Page title
+				esc_html($this->translate('Opt In ') . esc_html( $this->plugin_name) ), // Menu title
 				'manage_options', // Capability
-				'ffpl-opt-in', // Menu slug
+				self::$plugin_shortname . 'ffpl-opt-in', // Menu slug
 				array($this, 'render_opt_in_page') // Callback function
 			);
 		}
