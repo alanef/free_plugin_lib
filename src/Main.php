@@ -12,7 +12,7 @@ class Main {
 	/**
 	 * @var string
 	 */
-	private static $version = '1.0.0';
+	private static $version = '1.0.1';
 	/**
 	 * @var mixed
 	 */
