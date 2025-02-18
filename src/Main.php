@@ -90,7 +90,7 @@ class Main {
 			$settings_link
 		);
 		if ('optout' === get_site_option(self::$plugin_shortname . '_form_rendered', 'optout')) {
-			$settings_link = '<a href="' . esc_url(admin_url('options-general.php?page=ffpl-opt-in')) . '" style="font-weight:900; font-size: 110%; color: #b32d2e;">' . esc_html($this->translate('Opt In')) . '</a>';
+			$settings_link = '<a href="' . esc_url(admin_url('options-general.php?page=ffpl-opt-in-'.self::$plugin_shortname )) . '" style="font-weight:900; font-size: 110%; color: #b32d2e;">' . esc_html($this->translate('Opt In')) . '</a>';
 			array_unshift(
 				$links,
 				$settings_link
@@ -104,7 +104,7 @@ class Main {
 		$option = get_site_option(self::$plugin_shortname . '_form_rendered', 'optout');
 		if ('pending' === $option) {
 			update_site_option(self::$plugin_shortname . '_form_rendered', 'rendering');
-			wp_safe_redirect(admin_url('options-general.php?page=ffpl-opt-in'));
+			wp_safe_redirect(admin_url('options-general.php?page=ffpl-opt-in-'.self::$plugin_shortname ));
 			exit;
 		}
 		if (in_array($option, array('rendering', 'optout'))) {
@@ -112,7 +112,7 @@ class Main {
 				esc_html($this->translate('Opt In ')) . esc_html( $this->plugin_name), // Page title
 				esc_html($this->translate('Opt In ') . esc_html( $this->plugin_name) ), // Menu title
 				'manage_options', // Capability
-				self::$plugin_shortname . 'ffpl-opt-in', // Menu slug
+				'ffpl-opt-in-'.self::$plugin_shortname, // Menu slug
 				array($this, 'render_opt_in_page') // Callback function
 			);
 		}
@@ -127,7 +127,7 @@ class Main {
 		$user = wp_get_current_user();
 		update_site_option(self::$plugin_shortname . '_form_rendered', 'optout');
 		?>
-        <div class="wrap" role="main">
+        <div class="fpl-page-wrap" role="main">
             <div class="fpl-wrap" role="form" aria-labelledby="optin-heading">
                 <div class="box">
                     <div class="logo-container">
@@ -218,7 +218,7 @@ class Main {
 
 	public function conditional_enqueue_assets($hook) {
 		// Only load on our specific page
-		if ($hook !== 'settings_page_ffpl-opt-in') {
+		if ($hook !== 'settings_page_ffpl-opt-in-'.self::$plugin_shortname) {
 			return;
 		}
 		$this->enqueue_assets();
