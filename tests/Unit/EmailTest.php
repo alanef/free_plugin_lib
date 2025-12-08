@@ -10,7 +10,7 @@ class EmailTest extends TestCase
 
 	protected function setUp(): void
 	{
-		$this->email = new Email('test_plugin');
+		$this->email = new Email('SWEGTS');
 	}
 
 	/**
