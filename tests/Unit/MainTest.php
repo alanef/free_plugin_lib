@@ -23,11 +23,10 @@ class MainTest extends TestCase
 		);
 	}
 
-	public function testPluginActivationSetsPendingStatus()
+	public function testConstructorInitializesProperties()
 	{
-		$_REQUEST['_wpnonce'] = 'test_nonce';
-		$this->main->plugin_activate();
-		$this->assertTrue(true); // Verify get_site_option was called
+		// Test that Main object is properly constructed
+		$this->assertInstanceOf(Main::class, $this->main);
 	}
 
 	public function testSettingsLinkAdded()

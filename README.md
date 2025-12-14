@@ -28,25 +28,31 @@ When you build for plugin release use `composer update --no-dev` flag ensures th
 ## Usage
 
 ### Initialization
-To use the library, initialize it in your plugin's main file:
+To use the library, initialize it in your plugin's main file. You can instantiate it on any hook (e.g., `plugins_loaded`):
 
 ```php
 use Fullworks_Free_Plugin_Lib\Main;
 
-$plugin_file = __FILE__;
-$settings_page = 'options-general.php?page=your-plugin-settings';
-$plugin_shortname = 'your_plugin_shortname';
-$page = 'your-plugin-page';
-$plugin_name = 'your-plugin-name';
-
-$plugin_lib = new Main($plugin_file, $settings_page, $plugin_shortname, $page, $plugin_name);
+add_action('plugins_loaded', function() {
+    new Main(
+        __FILE__,                                      // plugin_file
+        'options-general.php?page=your-plugin-settings', // settings_page URL
+        'your_plugin_shortname',                       // plugin_shortname (unique identifier)
+        'your-plugin-page',                            // page slug
+        'Your Plugin Name'                             // display name
+    );
+});
 ```
 
 ### Opt-in Form
-The library automatically handles the opt-in form display and submission. Ensure that the `settings_page` parameter points to the correct settings page URL.
+The library automatically handles the opt-in form display using a non-intrusive approach:
+
+1. **Admin Notice**: A dismissible notice appears on the dashboard, plugins page, and your plugin's settings page prompting users to complete setup
+2. **First Settings Visit**: When users first visit your plugin's settings page, they are redirected to the opt-in form
+3. **User Choice**: Users can opt-in, skip, or dismiss the notice - the plugin works regardless of their choice
 
 ### Settings Page
-The library adds a settings link to the plugin action links and redirects users to the settings page upon activation. Customize the settings page content as needed.
+The library adds a settings link to the plugin action links. The opt-in prompt appears on first use, not on activation, ensuring it works with all activation methods (UI, WP-CLI, bulk activation, etc.).
 
 ### Promotional Content
 The library displays ads for premium plugins on the settings page. Ensure that the `Advert` class is correctly initialized and that the premium plugin check logic is in place.
@@ -57,12 +63,15 @@ The library displays ads for premium plugins on the settings page. Ensure that t
 
 ### Actions
 - `admin_menu`: Adds the settings page to the WordPress admin menu.
+- `admin_notices`: Displays setup prompt notice on dashboard, plugins page, and settings page.
 - `init`: Loads the text domain for localization.
 - `admin_enqueue_scripts`: Enqueues necessary scripts and styles for the settings page.
 - `ffpl_ad_display`: Displays promotional content for premium plugins.
 
 ### Filters
 - `plugin_action_links`: Adds a settings link to the plugin action links.
+- `ffpl_plugin_map`: Allows adding custom plugin shortnames to the verification endpoint mapping.
+- `ffpl_verify_url`: Allows overriding the verification endpoint URL (useful for testing).
 
 ---
 

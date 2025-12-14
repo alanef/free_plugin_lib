@@ -73,6 +73,12 @@ if ( ! function_exists( 'add_filter' ) ) {
 	}
 }
 
+if ( ! function_exists( 'apply_filters' ) ) {
+	function apply_filters( $tag, $value ) {
+		return $value;
+	}
+}
+
 if ( ! function_exists( 'add_action' ) ) {
 	function add_action( $tag, $callback, $priority = 10, $accepted_args = 1 ) {
 		return true;

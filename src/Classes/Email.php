@@ -28,13 +28,19 @@ class Email {
 			return false;
 		}
 
+		// Allow filtering of plugin map for testing/extensions
+		$plugin_map = apply_filters( 'ffpl_plugin_map', self::$plugin_map );
+
 		// Get plugin ID from map
-		$plugin_id = self::$plugin_map[self::$plugin_shortname] ?? null;
+		$plugin_id = $plugin_map[self::$plugin_shortname] ?? null;
 		if (!$plugin_id) {
 			return false;
 		}
 
-		$response = wp_remote_post('https://verify.workflow.fw9.uk', [
+		// Allow filtering of the verification URL for testing
+		$verify_url = apply_filters( 'ffpl_verify_url', 'https://verify.workflow.fw9.uk' );
+
+		$response = wp_remote_post($verify_url, [
 			'headers' => [
 				'Content-Type' => 'application/json',
 				'User-Agent' => 'WordPress/' . get_bloginfo('version'),
