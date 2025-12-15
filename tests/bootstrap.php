@@ -243,10 +243,18 @@ if ( ! class_exists( 'WP_Error' ) ) {
 if ( ! class_exists( 'WP_Screen' ) ) {
 	class WP_Screen {
 		public $id;
+		public $base;
 
-		public function __construct( $id = '' ) {
+		public function __construct( $id = '', $base = '' ) {
 			$this->id = $id;
+			$this->base = $base;
 		}
+	}
+}
+
+if ( ! function_exists( 'get_current_screen' ) ) {
+	function get_current_screen() {
+		return new WP_Screen('dashboard', 'dashboard');
 	}
 }
 $GLOBALS['mock_attempts'] = 0;

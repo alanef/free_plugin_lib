@@ -297,10 +297,13 @@ class Main {
 	}
 
 	public function maybe_show_setup_notice() {
-		global $pagenow;
-
 		// Only for users who can manage options
 		if (!current_user_can('manage_options')) {
+			return;
+		}
+
+		$screen = get_current_screen();
+		if (!$screen) {
 			return;
 		}
 
@@ -317,11 +320,17 @@ class Main {
 			return;
 		}
 
-		// Show on dashboard, plugins page, or this plugin's settings page
-		$show_on_pages = array('index.php', 'plugins.php');
-		$is_our_settings = isset($_GET['page']) && $_GET['page'] === $this->page;
+		// Show on dashboard, plugins page, tools, options-general, or this plugin's settings page
+		$page = $screen->base;
+		$display_on_pages = array(
+			'dashboard',
+			'plugins',
+			'tools',
+			'options-general',
+			'settings_page_' . $this->page,
+		);
 
-		if (!in_array($pagenow, $show_on_pages) && !$is_our_settings) {
+		if (!in_array($page, $display_on_pages, true)) {
 			return;
 		}
 
