@@ -42,6 +42,7 @@ class Main {
 		add_filter('plugin_action_links_' . $this->plugin_file, array($this, 'plugin_action_links'));
 		add_action('init', array($this, 'load_text_domain'));
 		add_action('admin_init', array($this, 'handle_skip_optin'));
+        add_action('admin_init', array($this, 'handle_optin_page'));
 		add_action('admin_menu', array($this, 'add_settings_page'));
 
 		// Move AJAX handler registration outside current_screen
@@ -79,6 +80,16 @@ class Main {
 		exit;
 	}
 
+    public function handle_optin_page() {
+        $current_page = $_GET['page'] ?? '';
+        $option = get_site_option(self::$plugin_shortname . '_form_rendered');
+        if ('pending' === $option && $current_page == $this->page) {
+            update_site_option(self::$plugin_shortname . '_form_rendered', 'rendering');
+            wp_safe_redirect(admin_url('options-general.php?page=ffpl-opt-in-'.self::$plugin_shortname ));
+            exit;
+        }
+    }
+
 	public function plugin_action_links($links) {
 		$settings_link = '<a href="' . esc_url($this->settings_page) . '">' . esc_html($this->translate('Settings')) . '</a>';
 		array_unshift(
@@ -102,13 +113,6 @@ class Main {
 		if (false === $option) {
 			update_site_option(self::$plugin_shortname . '_form_rendered', 'pending');
 			$option = 'pending';
-		}
-
-		// If pending and visiting settings page, redirect to opt-in
-		if ('pending' === $option && isset($_GET['page']) && $_GET['page'] === $this->page) {
-			update_site_option(self::$plugin_shortname . '_form_rendered', 'rendering');
-			wp_safe_redirect(admin_url('options-general.php?page=ffpl-opt-in-'.self::$plugin_shortname ));
-			exit;
 		}
 
 		// Register the opt-in page if not yet completed
