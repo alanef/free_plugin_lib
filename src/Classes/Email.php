@@ -15,7 +15,7 @@ class Email {
 		'FAUM'   => 'faum',
 		'FSS'    => 'fss',
 		'MMT'    => 'mmt',
-		'CSCF'   => 'cscf',
+		'CSCF'   => 'cfcs',   // deliberate transpose  here
 	];
 
 	public function __construct($plugin_shortname) {
