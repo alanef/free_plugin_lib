@@ -12,7 +12,7 @@ class Main {
 	/**
 	 * @var string
 	 */
-	private static $version = '1.2.1';
+	private static $version = '1.2.4';
 	/**
 	 * @var mixed
 	 */
@@ -55,7 +55,9 @@ class Main {
 		// Admin notice for setup prompt
 		add_action('admin_notices', array($this, 'maybe_show_setup_notice'));
 
-		add_action('ffpl_ad_display', array(new Classes\Advert(), 'ad_display'));
+		if (!\has_action('ffpl_ad_display')) {
+			add_action('ffpl_ad_display', array(new Classes\Advert(), 'ad_display'));
+		}
 	}
 
 	public static function plugin_uninstall() {

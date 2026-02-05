@@ -85,6 +85,12 @@ if ( ! function_exists( 'add_action' ) ) {
 	}
 }
 
+if ( ! function_exists( 'has_action' ) ) {
+	function has_action( $tag, $callback = false ) {
+		return false;
+	}
+}
+
 // Admin UI
 if ( ! function_exists( 'add_options_page' ) ) {
 	function add_options_page( $page_title, $menu_title, $capability, $menu_slug, $callback ) {
