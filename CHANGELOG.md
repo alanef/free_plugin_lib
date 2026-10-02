@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-10-02
+### Fixed
+- A host plugin's own uninstall routine never ran when the plugin was deleted, so its settings were left behind. The library's constructor registered its own uninstall hook for the same plugin file. WordPress keeps only one uninstall callback per plugin, so the two registrations replaced each other, and the library's always won. This also caused two database writes to the `uninstall_plugins` option on every request. The library no longer registers an uninstall hook.
+
+### Changed
+- **Action needed in host plugins:** call `\Fullworks_Free_Plugin_Lib\Main::plugin_uninstall( 'your_shortname' )` from your own uninstall handler (or `uninstall.php`) to remove the library's `{shortname}_form_rendered` option. `plugin_uninstall()` now accepts the shortname as an optional argument, because `Main` may not have been constructed when the uninstall callback runs.
+
+### Removed
+- The premium anti-spam advert is no longer shown on settings pages. The library no longer attaches anything to the `ffpl_ad_display` action, so plugins that still call `do_action( 'ffpl_ad_display' )` keep working and simply show nothing. The `Advert` class and its image have been deleted.
+
 # [1.2.4] - 2026-02-05
 ### Fixed
 - Fix ad displaying multiple times when multiple plugins use the library

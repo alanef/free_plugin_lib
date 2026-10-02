@@ -44,6 +44,15 @@ add_action('plugins_loaded', function() {
 });
 ```
 
+### Uninstall
+The library does not register an uninstall hook. WordPress keeps only one uninstall callback per plugin, so a hook registered by the library would replace yours. Call the library's cleanup from your own uninstall routine (or `uninstall.php`), passing the same shortname you gave the constructor:
+
+```php
+\Fullworks_Free_Plugin_Lib\Main::plugin_uninstall('your_plugin_shortname');
+```
+
+Pass the shortname explicitly: if you construct `Main` on a hook such as `plugins_loaded`, it will not have run by the time the uninstall callback fires.
+
 ### Opt-in Form
 The library automatically handles the opt-in form display using a non-intrusive approach:
 
@@ -54,9 +63,6 @@ The library automatically handles the opt-in form display using a non-intrusive 
 ### Settings Page
 The library adds a settings link to the plugin action links. The opt-in prompt appears on first use, not on activation, ensuring it works with all activation methods (UI, WP-CLI, bulk activation, etc.).
 
-### Promotional Content
-The library displays ads for premium plugins on the settings page. Ensure that the `Advert` class is correctly initialized and that the premium plugin check logic is in place.
-
 ---
 
 ## Hooks and Filters
@@ -66,7 +72,7 @@ The library displays ads for premium plugins on the settings page. Ensure that t
 - `admin_notices`: Displays setup prompt notice on dashboard, plugins page, and settings page.
 - `init`: Loads the text domain for localization.
 - `admin_enqueue_scripts`: Enqueues necessary scripts and styles for the settings page.
-- `ffpl_ad_display`: Displays promotional content for premium plugins.
+- `ffpl_ad_display`: No longer used since 1.3.0. Nothing is hooked to it, so existing `do_action( 'ffpl_ad_display' )` calls do nothing.
 
 ### Filters
 - `plugin_action_links`: Adds a settings link to the plugin action links.

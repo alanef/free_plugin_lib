@@ -12,7 +12,7 @@ class Main {
 	/**
 	 * @var string
 	 */
-	private static $version = '1.2.4';
+	private static $version = '1.3.0';
 	/**
 	 * @var mixed
 	 */
@@ -38,7 +38,6 @@ class Main {
 		$this->settings_page = $settings_page;
 		$this->plugin_name = $plugin_name;
 
-		register_uninstall_hook($this->plugin_file, array('\Fullworks_Free_Plugin_Lib\Main', 'plugin_uninstall'));
 		add_filter('plugin_action_links_' . $this->plugin_file, array($this, 'plugin_action_links'));
 		add_action('init', array($this, 'load_text_domain'));
 		add_action('admin_init', array($this, 'handle_skip_optin'));
@@ -54,14 +53,24 @@ class Main {
 
 		// Admin notice for setup prompt
 		add_action('admin_notices', array($this, 'maybe_show_setup_notice'));
-
-		if (!\has_action('ffpl_ad_display')) {
-			add_action('ffpl_ad_display', array(new Classes\Advert(), 'ad_display'));
-		}
 	}
 
-	public static function plugin_uninstall() {
-		delete_site_option(self::$plugin_shortname . '_form_rendered');
+	/**
+	 * Remove the library's data. Host plugins call this from their own uninstall routine.
+	 *
+	 * The library does not register an uninstall hook itself: WordPress stores one uninstall
+	 * callback per plugin, so registering one here would replace the host plugin's.
+	 *
+	 * @param string|null $plugin_shortname Defaults to the shortname passed to the constructor.
+	 *                                      Pass it explicitly when Main may not have been
+	 *                                      constructed yet, e.g. when it is created on a hook.
+	 */
+	public static function plugin_uninstall($plugin_shortname = null) {
+		$plugin_shortname = null === $plugin_shortname ? self::$plugin_shortname : $plugin_shortname;
+		if (empty($plugin_shortname)) {
+			return;
+		}
+		delete_site_option($plugin_shortname . '_form_rendered');
 	}
 
 	public function handle_skip_optin() {

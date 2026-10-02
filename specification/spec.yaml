@@ -61,18 +61,6 @@ components:
         maxLength: 254
         filter: "FILTER_VALIDATE_EMAIL"
 
-  - name: "Advert"
-    features:
-      - "premium_promotion"
-      - "responsive_display"
-      - "accessibility"
-    conditions:
-      - "premium_not_installed"
-    assets:
-      images:
-        - "logo.svg"
-        - "anti-spam-01.png"
-
   - name: "Security"
     features:
       - "nonce_management"
