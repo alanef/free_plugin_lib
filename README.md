@@ -8,7 +8,6 @@ This library is designed to be integrated into free WordPress plugins, providing
 
 - **Opt-in Form**: Allows users to opt-in to email lists for updates, tips, and exclusive offers.
 - **Settings Page Management**: Adds a settings link to the plugin action links and redirects users to the settings page upon activation.
-- **Promotional Content**: Displays ads for related premium plugins on the settings page, encouraging users to upgrade.
 - **Compliance**: Ensures compliance with WordPress.org guidelines, including explicit consent for data collection and clear privacy policies.
 
 ---
@@ -52,6 +51,16 @@ The library does not register an uninstall hook. WordPress keeps only one uninst
 ```
 
 Pass the shortname explicitly: if you construct `Main` on a hook such as `plugins_loaded`, it will not have run by the time the uninstall callback fires.
+
+### Upgrading to 1.3.0
+Plugins that already bundle the library need two changes:
+
+1. **Call the library's uninstall cleanup** from your plugin's own uninstall routine or `uninstall.php` (see [Uninstall](#uninstall)):
+   ```php
+   \Fullworks_Free_Plugin_Lib\Main::plugin_uninstall('your_plugin_shortname');
+   ```
+   Until you add this, your own uninstall code runs again (it was being replaced by the library's), but the library's `{shortname}_form_rendered` option is left behind.
+2. **Remove any `do_action( 'ffpl_ad_display' )` calls.** The library no longer shows an advert, so the call outputs nothing. Leaving it in is harmless.
 
 ### Opt-in Form
 The library automatically handles the opt-in form display using a non-intrusive approach:
