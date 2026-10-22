@@ -6,9 +6,17 @@ use Fullworks_Free_Plugin_Lib\Classes\Email;
 
 class Main {
 	/**
+	 * Shortname of the most recently constructed instance, used only as the default for
+	 * plugin_uninstall(). Every plugin bundling this library shares one copy of the class,
+	 * so per-plugin state must live on the instance, never here.
+	 *
 	 * @var mixed
 	 */
-	private static $plugin_shortname;
+	private static $last_plugin_shortname;
+	/**
+	 * @var mixed
+	 */
+	private $plugin_shortname;
 	/**
 	 * @var string
 	 */
@@ -32,7 +40,8 @@ class Main {
 	private $settings_page;
 
 	public function __construct($plugin_file, $settings_page, $plugin_shortname, $page, $plugin_name) {
-		self::$plugin_shortname = $plugin_shortname;
+		$this->plugin_shortname = $plugin_shortname;
+		self::$last_plugin_shortname = $plugin_shortname;
 		$this->page = $page;
 		$this->plugin_file = $plugin_file;
 		$this->settings_page = $settings_page;
@@ -66,7 +75,7 @@ class Main {
 	 *                                      constructed yet, e.g. when it is created on a hook.
 	 */
 	public static function plugin_uninstall($plugin_shortname = null) {
-		$plugin_shortname = null === $plugin_shortname ? self::$plugin_shortname : $plugin_shortname;
+		$plugin_shortname = null === $plugin_shortname ? self::$last_plugin_shortname : $plugin_shortname;
 		if (empty($plugin_shortname)) {
 			return;
 		}
@@ -80,12 +89,12 @@ class Main {
 
 		// Verify nonce - the nonce IS the ffpl_skip value
 		$nonce = sanitize_text_field(wp_unslash($_GET['ffpl_skip']));
-		if (!wp_verify_nonce($nonce, 'ffpl_skip_' . self::$plugin_shortname)) {
+		if (!wp_verify_nonce($nonce, 'ffpl_skip_' . $this->plugin_shortname)) {
 			return;
 		}
 
 		// Set status to optout - user explicitly skipped
-		update_site_option(self::$plugin_shortname . '_form_rendered', 'optout');
+		update_site_option($this->plugin_shortname . '_form_rendered', 'optout');
 
 		// Redirect to clean URL (remove the skip param)
 		wp_safe_redirect(remove_query_arg('ffpl_skip'));
@@ -95,10 +104,11 @@ class Main {
 	public function handle_optin_page() {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is page routing, not form processing
 		$current_page = isset($_GET['page']) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
-		$option = get_site_option(self::$plugin_shortname . '_form_rendered');
-		if ('pending' === $option && $current_page === $this->page) {
-			update_site_option(self::$plugin_shortname . '_form_rendered', 'rendering');
-			wp_safe_redirect(admin_url('options-general.php?page=ffpl-opt-in-' . self::$plugin_shortname));
+		$option = get_site_option($this->plugin_shortname . '_form_rendered');
+		// 'rendering' means the opt-in screen was shown but left without a choice, so ask again
+		if (in_array($option, array('pending', 'rendering'), true) && $current_page === $this->page) {
+			update_site_option($this->plugin_shortname . '_form_rendered', 'rendering');
+			wp_safe_redirect(admin_url('options-general.php?page=ffpl-opt-in-' . $this->plugin_shortname));
 			exit;
 		}
 	}
@@ -109,8 +119,8 @@ class Main {
 			$links,
 			$settings_link
 		);
-		if ('optout' === get_site_option(self::$plugin_shortname . '_form_rendered', 'optout')) {
-			$settings_link = '<a href="' . esc_url(admin_url('options-general.php?page=ffpl-opt-in-'.self::$plugin_shortname )) . '" style="font-weight:900; font-size: 110%; color: #b32d2e;">' . esc_html($this->translate('Opt In')) . '</a>';
+		if ('optout' === get_site_option($this->plugin_shortname . '_form_rendered', 'optout')) {
+			$settings_link = '<a href="' . esc_url(admin_url('options-general.php?page=ffpl-opt-in-'.$this->plugin_shortname )) . '" style="font-weight:900; font-size: 110%; color: #b32d2e;">' . esc_html($this->translate('Opt In')) . '</a>';
 			array_unshift(
 				$links,
 				$settings_link
@@ -122,9 +132,9 @@ class Main {
 
 	public function add_settings_page() {
 		// First-run detection - if option doesn't exist, set to pending
-		$option = get_site_option(self::$plugin_shortname . '_form_rendered');
+		$option = get_site_option($this->plugin_shortname . '_form_rendered');
 		if (false === $option) {
-			update_site_option(self::$plugin_shortname . '_form_rendered', 'pending');
+			update_site_option($this->plugin_shortname . '_form_rendered', 'pending');
 			$option = 'pending';
 		}
 
@@ -134,7 +144,7 @@ class Main {
 				esc_html($this->translate('Opt In ')) . esc_html( $this->plugin_name), // Page title
 				esc_html($this->translate('Opt In ') . esc_html( $this->plugin_name) ), // Menu title
 				'manage_options', // Capability
-				'ffpl-opt-in-'.self::$plugin_shortname, // Menu slug
+				'ffpl-opt-in-'.$this->plugin_shortname, // Menu slug
 				array($this, 'render_opt_in_page') // Callback function
 			);
 		}
@@ -199,7 +209,7 @@ class Main {
                                 <p><a href="#" class="details-link" id="detailsLink"><?php echo esc_html($this->translate('Privacy & Details')); ?></a></p>
                             </div>
                             <div class="button-2">
-                                <a href="<?php echo esc_url(add_query_arg('ffpl_skip', wp_create_nonce('ffpl_skip_' . self::$plugin_shortname), $this->settings_page)); ?>"
+                                <a href="<?php echo esc_url(add_query_arg('ffpl_skip', wp_create_nonce('ffpl_skip_' . $this->plugin_shortname), $this->settings_page)); ?>"
                                    class="button button-secondary btn-skip" name="action" value="skip"
                                    tabindex="2">
 									<?php echo esc_html($this->translate('Skip')); ?>
@@ -240,7 +250,7 @@ class Main {
 
 	public function conditional_enqueue_assets($hook) {
 		// Only load on our specific page
-		if ($hook !== 'settings_page_ffpl-opt-in-'.self::$plugin_shortname) {
+		if ($hook !== 'settings_page_ffpl-opt-in-'.$this->plugin_shortname) {
 			return;
 		}
 		$this->enqueue_assets();
@@ -259,11 +269,17 @@ class Main {
 		wp_localize_script('ffpl-main-js', 'ffplData', array(
 			'ajaxurl' => admin_url('admin-ajax.php'),
 			'nonce' => wp_create_nonce('ffpl_optin_nonce'),
+			'shortname' => $this->plugin_shortname,
 			'settings_page' => $this->settings_page
 		));
 	}
 
 	public function handle_optin_ajax() {
+		// Every plugin bundling the library registers this handler; leave other plugins' requests to them
+		if (isset($_POST['shortname']) && !$this->is_own_shortname(sanitize_key(wp_unslash($_POST['shortname'])))) {
+			return;
+		}
+
 		// Verify request method
 		if (!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
 			wp_send_json_error(['message' => $this->translate('Invalid request method')]);
@@ -296,16 +312,16 @@ class Main {
 
 		$email = isset($_POST['email']) ? sanitize_email(wp_unslash($_POST['email'])) : '';
 
-		$email_handler = new Email(self::$plugin_shortname);
+		$email_handler = new Email($this->plugin_shortname);
 		$result = $email_handler->handle_optin_submission($email);
 
 		if ($result) {
-			update_site_option(self::$plugin_shortname . '_form_rendered', 'optin');
+			update_site_option($this->plugin_shortname . '_form_rendered', 'optin');
 			wp_send_json_success(array(
 				'redirect_url' => $this->settings_page
 			));
 		} else {
-			update_site_option(self::$plugin_shortname . '_form_rendered', 'optout');
+			update_site_option($this->plugin_shortname . '_form_rendered', 'optout');
 			wp_send_json_success(array(
 				'redirect_url' => $this->settings_page
 			));
@@ -324,7 +340,7 @@ class Main {
 			return;
 		}
 
-		$option = get_site_option(self::$plugin_shortname . '_form_rendered');
+		$option = get_site_option($this->plugin_shortname . '_form_rendered');
 
 		// Only show notice if no decision has been made yet (pending or rendering)
 		// Don't show if optin, optout, or any other status - a decision was made
@@ -333,7 +349,7 @@ class Main {
 		}
 
 		// Don't show if user dismissed the notice
-		if (get_user_meta(get_current_user_id(), self::$plugin_shortname . '_notice_dismissed', true)) {
+		if (get_user_meta(get_current_user_id(), $this->plugin_shortname . '_notice_dismissed', true)) {
 			return;
 		}
 
@@ -351,29 +367,27 @@ class Main {
 			return;
 		}
 
-		$opt_in_url = admin_url('options-general.php?page=ffpl-opt-in-' . self::$plugin_shortname);
+		$opt_in_url = admin_url('options-general.php?page=ffpl-opt-in-' . $this->plugin_shortname);
 		?>
-		<div class="notice notice-info is-dismissible ffpl-setup-notice" data-shortname="<?php echo esc_attr(self::$plugin_shortname); ?>">
+		<div class="notice notice-info is-dismissible ffpl-setup-notice" data-shortname="<?php echo esc_attr($this->plugin_shortname); ?>">
 			<p>
 				<strong><?php echo esc_html($this->plugin_name); ?>:</strong>
 				<?php
 				printf(
-					'%s <a href="%s"><strong>%s</strong></a> %s',
-					esc_html($this->translate('You haven\'t visited settings yet.')),
-					esc_url($this->settings_page),
-					esc_html($this->translate('Please check your settings')),
-					esc_html($this->translate('for optimal configuration and opt in for security updates, tips and occasional offers.'))
+					'%s <a href="%s"><strong>%s</strong></a>',
+					esc_html($this->translate('Choose whether to receive security updates, tips and occasional offers.')),
+					esc_url($opt_in_url),
+					esc_html($this->translate('Opt in or skip'))
 				);
 				?>
 			</p>
 		</div>
 		<script>
 		jQuery(document).ready(function($) {
-			$('.ffpl-setup-notice').on('click', '.notice-dismiss', function() {
-				var shortname = $(this).closest('.ffpl-setup-notice').data('shortname');
+			$('.ffpl-setup-notice[data-shortname="<?php echo esc_js($this->plugin_shortname); ?>"]').on('click', '.notice-dismiss', function() {
 				$.post(ajaxurl, {
 					action: 'ffpl_dismiss_notice',
-					shortname: shortname,
+					shortname: '<?php echo esc_js($this->plugin_shortname); ?>',
 					nonce: '<?php echo esc_js(wp_create_nonce('ffpl_dismiss_notice')); ?>'
 				});
 			});
@@ -393,14 +407,25 @@ class Main {
 			wp_die();
 		}
 
-		$shortname = isset($_POST['shortname']) ? sanitize_key($_POST['shortname']) : '';
-		if ($shortname === self::$plugin_shortname) {
-			update_user_meta(get_current_user_id(), self::$plugin_shortname . '_notice_dismissed', true);
-			wp_send_json_success();
+		// Every plugin bundling the library registers this handler; leave other plugins' requests to them
+		$shortname = isset($_POST['shortname']) ? sanitize_key(wp_unslash($_POST['shortname'])) : '';
+		if (!$this->is_own_shortname($shortname)) {
+			return;
 		}
 
-		wp_send_json_error();
+		// The meta key keeps the shortname's original case so existing dismissals stay readable
+		update_user_meta(get_current_user_id(), $this->plugin_shortname . '_notice_dismissed', true);
+		wp_send_json_success();
 		wp_die();
+	}
+
+	/**
+	 * sanitize_key() lowercases, and host plugins pass mixed-case shortnames such as 'SUE'.
+	 *
+	 * @param string $shortname A shortname that has been through sanitize_key().
+	 */
+	private function is_own_shortname($shortname) {
+		return '' !== $shortname && $shortname === sanitize_key($this->plugin_shortname);
 	}
 
 	private function translate($text) {

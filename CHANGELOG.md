@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Fixed
+- The opt-in setup notice could not be dismissed: it disappeared when closed and came back on the next page load. The dismiss handler compared the posted shortname, lowercased by `sanitize_key()`, against the host plugin's mixed-case shortname (`SUE`, `SWEGTS`, …), so the dismissal was never saved. Shortnames are now compared in their sanitized form. The user meta key is unchanged (`{shortname}_notice_dismissed`), so dismissals and opt-in choices already stored are still honoured.
+- On a site running more than one plugin that bundles the library, every plugin used the shortname of whichever plugin loaded last. They all registered the same opt-in page and checked the same status, so one plugin's notice could not be cleared from another's screen. The shortname is now stored per instance, and the AJAX handlers ignore requests for other plugins, letting those plugins answer them.
+- If the user left the opt-in screen without choosing, the status stayed at `rendering`. The notice then showed for good, and the opt-in screen never appeared again. Visiting the plugin's settings now shows the opt-in screen again until the user clicks Allow or Skip.
+- The notice linked to the plugin's settings page rather than the opt-in screen, and said "You haven't visited settings yet" even after the user had. It now reads "Choose whether to receive security updates, tips and occasional offers." and links to the opt-in screen. The new wording is not yet translated.
+
 ## [1.3.0] - 2026-10-02
 ### Fixed
 - A host plugin's own uninstall routine never ran when the plugin was deleted, so its settings were left behind. The library's constructor registered its own uninstall hook for the same plugin file. WordPress keeps only one uninstall callback per plugin, so the two registrations replaced each other, and the library's always won. This also caused two database writes to the `uninstall_plugins` option on every request. The library no longer registers an uninstall hook.

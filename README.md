@@ -65,9 +65,11 @@ Plugins that already bundle the library need two changes:
 ### Opt-in Form
 The library automatically handles the opt-in form display using a non-intrusive approach:
 
-1. **Admin Notice**: A dismissible notice appears on the dashboard, plugins page, and your plugin's settings page prompting users to complete setup
-2. **First Settings Visit**: When users first visit your plugin's settings page, they are redirected to the opt-in form
+1. **Admin Notice**: A dismissible notice linking to the opt-in form appears on the dashboard, plugins page, and your plugin's settings page until a choice is made. Dismissing it hides it for that user.
+2. **Settings Visit**: Visiting your plugin's settings page redirects to the opt-in form until the user clicks Allow or Skip
 3. **User Choice**: Users can opt-in, skip, or dismiss the notice - the plugin works regardless of their choice
+
+Several plugins can bundle the library on one site. They share one copy of the class (whichever loads first), but each instance keeps its own shortname, status and notice.
 
 ### Settings Page
 The library adds a settings link to the plugin action links. The opt-in prompt appears on first use, not on activation, ensuring it works with all activation methods (UI, WP-CLI, bulk activation, etc.).

@@ -14,6 +14,7 @@ class MainTest extends TestCase
 	protected function setUp(): void
 	{
 		parent::setUp();
+		ffpl_test_reset();
 		$this->main = new Main(
 			$this->plugin_file,
 			$this->settings_page,
@@ -31,10 +32,20 @@ class MainTest extends TestCase
 
 	public function testSettingsLinkAdded()
 	{
+		update_site_option($this->plugin_shortname . '_form_rendered', 'optin');
 		$links = ['existing_link'];
 		$result = $this->main->plugin_action_links($links);
 
 		$this->assertIsArray($result);
 		$this->assertCount(2, $result);
+	}
+
+	public function testOptInLinkAddedAfterSkipping()
+	{
+		update_site_option($this->plugin_shortname . '_form_rendered', 'optout');
+		$result = $this->main->plugin_action_links(['existing_link']);
+
+		$this->assertCount(3, $result);
+		$this->assertStringContainsString('page=ffpl-opt-in-test_plugin', $result[0]);
 	}
 }

@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
             data: {
                 action: 'ffpl_handle_optin',
                 email: email,
+                shortname: ffplData.shortname,
                 nonce: ffplData.nonce
             },
             success: function(response) {

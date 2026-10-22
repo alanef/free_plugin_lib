@@ -3,7 +3,7 @@
 namespace Fullworks_Free_Plugin_Lib\Classes;
 
 class Email {
-	private static $plugin_shortname;
+	private $plugin_shortname;
 
 	// Plugin shortname to ID mapping
 	private static $plugin_map = [
@@ -19,7 +19,7 @@ class Email {
 	];
 
 	public function __construct($plugin_shortname) {
-		self::$plugin_shortname = $plugin_shortname;
+		$this->plugin_shortname = $plugin_shortname;
 	}
 
 	public function handle_optin_submission($email) {
@@ -32,7 +32,7 @@ class Email {
 		$plugin_map = apply_filters( 'ffpl_plugin_map', self::$plugin_map );
 
 		// Get plugin ID from map
-		$plugin_id = $plugin_map[self::$plugin_shortname] ?? null;
+		$plugin_id = $plugin_map[$this->plugin_shortname] ?? null;
 		if (!$plugin_id) {
 			return false;
 		}

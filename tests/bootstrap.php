@@ -29,21 +29,54 @@ if ( ! function_exists( 'current_user_can' ) ) {
 	}
 }
 
-// Options & Site
+// Options & Site: an in-memory store, reset by each test via ffpl_test_reset()
+$GLOBALS['ffpl_test_options']   = array();
+$GLOBALS['ffpl_test_user_meta'] = array();
+$GLOBALS['ffpl_test_ajax_nonce_valid'] = true;
+
+function ffpl_test_reset() {
+	$GLOBALS['ffpl_test_options']   = array();
+	$GLOBALS['ffpl_test_user_meta'] = array();
+	$GLOBALS['ffpl_test_ajax_nonce_valid'] = true;
+	$_GET  = array();
+	$_POST = array();
+}
+
 if ( ! function_exists( 'get_site_option' ) ) {
 	function get_site_option( $option, $default = false ) {
-		return false;
+		return array_key_exists( $option, $GLOBALS['ffpl_test_options'] ) ? $GLOBALS['ffpl_test_options'][ $option ] : $default;
 	}
 }
 
 if ( ! function_exists( 'update_site_option' ) ) {
 	function update_site_option( $option, $value ) {
+		$GLOBALS['ffpl_test_options'][ $option ] = $value;
 		return true;
 	}
 }
 
 if ( ! function_exists( 'delete_site_option' ) ) {
 	function delete_site_option( $option ) {
+		unset( $GLOBALS['ffpl_test_options'][ $option ] );
+		return true;
+	}
+}
+
+if ( ! function_exists( 'get_current_user_id' ) ) {
+	function get_current_user_id() {
+		return 1;
+	}
+}
+
+if ( ! function_exists( 'get_user_meta' ) ) {
+	function get_user_meta( $user_id, $key = '', $single = false ) {
+		return isset( $GLOBALS['ffpl_test_user_meta'][ $user_id ][ $key ] ) ? $GLOBALS['ffpl_test_user_meta'][ $user_id ][ $key ] : '';
+	}
+}
+
+if ( ! function_exists( 'update_user_meta' ) ) {
+	function update_user_meta( $user_id, $key, $value ) {
+		$GLOBALS['ffpl_test_user_meta'][ $user_id ][ $key ] = $value;
 		return true;
 	}
 }
@@ -104,9 +137,66 @@ if ( ! function_exists( 'admin_url' ) ) {
 	}
 }
 
+// Redirects and JSON responses end the request in WordPress, so the mocks throw instead
+class FFPL_Test_Redirect extends \Exception {
+	public $location;
+
+	public function __construct( $location ) {
+		parent::__construct( 'redirect' );
+		$this->location = $location;
+	}
+}
+
+class FFPL_Test_Json_Response extends \Exception {
+	public $success;
+	public $data;
+
+	public function __construct( $success, $data = null ) {
+		parent::__construct( 'json' );
+		$this->success = $success;
+		$this->data    = $data;
+	}
+}
+
 if ( ! function_exists( 'wp_safe_redirect' ) ) {
 	function wp_safe_redirect( $location, $status = 302 ) {
-		return true;
+		throw new FFPL_Test_Redirect( $location );
+	}
+}
+
+if ( ! function_exists( 'wp_send_json_success' ) ) {
+	function wp_send_json_success( $data = null ) {
+		throw new FFPL_Test_Json_Response( true, $data );
+	}
+}
+
+if ( ! function_exists( 'wp_send_json_error' ) ) {
+	function wp_send_json_error( $data = null, $status = null ) {
+		throw new FFPL_Test_Json_Response( false, $data );
+	}
+}
+
+if ( ! function_exists( 'wp_die' ) ) {
+	function wp_die() {
+		throw new FFPL_Test_Json_Response( null );
+	}
+}
+
+if ( ! function_exists( 'check_ajax_referer' ) ) {
+	function check_ajax_referer( $action = -1, $query_arg = false, $stop = true ) {
+		return $GLOBALS['ffpl_test_ajax_nonce_valid'];
+	}
+}
+
+if ( ! function_exists( 'remove_query_arg' ) ) {
+	function remove_query_arg( $key ) {
+		return 'http://test.com/wp-admin/options-general.php';
+	}
+}
+
+if ( ! function_exists( 'esc_js' ) ) {
+	function esc_js( $text ) {
+		return addslashes( $text );
 	}
 }
 
