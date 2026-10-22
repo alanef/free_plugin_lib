@@ -202,4 +202,94 @@ class OptInFlowTest extends TestCase
 		$this->assertFalse(get_site_option('SUE_form_rendered'));
 		$this->assertSame('optin', get_site_option('SWEGTS_form_rendered'));
 	}
+
+	public function testNoRedirectForPluginWithoutSettingsPage()
+	{
+		// RSHFD passes '' as its page; without a guard every admin request matched it
+		$main = new Main('rshfd/rshfd.php', 'http://test.com/wp-admin/options-general.php?page=rshfd', 'RSHFD-Free', '', 'RSHFD');
+		update_site_option('RSHFD-Free_form_rendered', 'rendering');
+
+		$this->assertNull($this->run_handler(array($main, 'handle_optin_page')));
+		$GLOBALS['ffpl_test_doing_ajax'] = true;
+		$this->assertNull($this->run_handler(array($main, 'handle_optin_page')));
+	}
+
+	public function testNoRedirectDuringAjaxOrForNonAdmins()
+	{
+		$main = $this->make_main('SUE', 'stop-user-enumeration');
+		update_site_option('SUE_form_rendered', 'rendering');
+		$_GET['page'] = 'stop-user-enumeration';
+
+		$GLOBALS['ffpl_test_doing_ajax'] = true;
+		$this->assertNull($this->run_handler(array($main, 'handle_optin_page')), 'ajax');
+
+		$GLOBALS['ffpl_test_doing_ajax'] = false;
+		$GLOBALS['ffpl_test_can_manage'] = false;
+		$this->assertNull($this->run_handler(array($main, 'handle_optin_page')), 'non-admin');
+
+		// Positive control: same request, as an admin outside AJAX
+		$GLOBALS['ffpl_test_can_manage'] = true;
+		$this->assertInstanceOf(\FFPL_Test_Redirect::class, $this->run_handler(array($main, 'handle_optin_page')));
+	}
+
+	public function testHookSuffixPageRedirectsAndShowsNoticeOnItsScreen()
+	{
+		// CSCF, LHF, MMT and SSFGM pass a hook suffix rather than a menu slug
+		$main = new Main('mmt/mmt.php', 'http://test.com/wp-admin/edit.php?post_type=team_members&page=meet-my-team-settings', 'MMT-Free', 'team_members_page_meet-my-team-settings', 'Meet My Team');
+		update_site_option('MMT-Free_form_rendered', 'rendering');
+
+		$_GET['page'] = 'meet-my-team-settings';
+		$redirect = $this->run_handler(array($main, 'handle_optin_page'));
+		$this->assertInstanceOf(\FFPL_Test_Redirect::class, $redirect);
+		$this->assertStringContainsString('page=ffpl-opt-in-MMT-Free', $redirect->location);
+
+		$GLOBALS['ffpl_test_screen_base'] = 'team_members_page_meet-my-team-settings';
+		$this->assertStringContainsString('data-shortname="MMT-Free"', $this->notice_html($main));
+	}
+
+	public function testNoticeShowsOnSlugPluginsSettingsScreen()
+	{
+		$main = $this->make_main('SUE', 'stop-user-enumeration');
+		update_site_option('SUE_form_rendered', 'pending');
+
+		$GLOBALS['ffpl_test_screen_base'] = 'settings_page_stop-user-enumeration';
+		$this->assertStringContainsString('data-shortname="SUE"', $this->notice_html($main));
+
+		$GLOBALS['ffpl_test_screen_base'] = 'edit';
+		$this->assertSame('', $this->notice_html($main));
+	}
+
+	/**
+	 * The handler sends a Content-Type header, which needs a process with no output yet.
+	 *
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 */
+	public function testOptInRequestForOwnPluginRecordsTheChoice()
+	{
+		$main = $this->make_main('SUE', 'stop-user-enumeration');
+		update_site_option('SUE_form_rendered', 'rendering');
+		$_SERVER['REQUEST_METHOD'] = 'POST';
+
+		$_POST = array('shortname' => 'SUE', 'email' => 'someone@example.com');
+		$response = $this->run_handler(array($main, 'handle_optin_ajax'));
+		$this->assertTrue($response->success);
+		$this->assertSame('optin', get_site_option('SUE_form_rendered'));
+
+		// Older copies of main.js post no shortname; the request is still handled
+		update_site_option('SUE_form_rendered', 'rendering');
+		$_POST = array('email' => 'not-an-email');
+		$this->run_handler(array($main, 'handle_optin_ajax'));
+		$this->assertSame('optout', get_site_option('SUE_form_rendered'));
+	}
+
+	public function testUninstallDefaultsToLastConstructedShortname()
+	{
+		$this->make_main('SUE', 'stop-user-enumeration');
+		update_site_option('SUE_form_rendered', 'optin');
+
+		Main::plugin_uninstall();
+
+		$this->assertFalse(get_site_option('SUE_form_rendered'));
+	}
 }

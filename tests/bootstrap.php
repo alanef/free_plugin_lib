@@ -25,7 +25,13 @@ if (!function_exists('wp_verify_nonce')) {
 
 if ( ! function_exists( 'current_user_can' ) ) {
 	function current_user_can( $capability ) {
-		return true;
+		return $GLOBALS['ffpl_test_can_manage'];
+	}
+}
+
+if ( ! function_exists( 'wp_doing_ajax' ) ) {
+	function wp_doing_ajax() {
+		return $GLOBALS['ffpl_test_doing_ajax'];
 	}
 }
 
@@ -33,8 +39,14 @@ if ( ! function_exists( 'current_user_can' ) ) {
 $GLOBALS['ffpl_test_options']   = array();
 $GLOBALS['ffpl_test_user_meta'] = array();
 $GLOBALS['ffpl_test_ajax_nonce_valid'] = true;
+$GLOBALS['ffpl_test_doing_ajax'] = false;
+$GLOBALS['ffpl_test_can_manage'] = true;
+$GLOBALS['ffpl_test_screen_base'] = 'dashboard';
 
 function ffpl_test_reset() {
+	$GLOBALS['ffpl_test_doing_ajax'] = false;
+	$GLOBALS['ffpl_test_can_manage'] = true;
+	$GLOBALS['ffpl_test_screen_base'] = 'dashboard';
 	$GLOBALS['ffpl_test_options']   = array();
 	$GLOBALS['ffpl_test_user_meta'] = array();
 	$GLOBALS['ffpl_test_ajax_nonce_valid'] = true;
@@ -356,7 +368,7 @@ if ( ! class_exists( 'WP_Screen' ) ) {
 
 if ( ! function_exists( 'get_current_screen' ) ) {
 	function get_current_screen() {
-		return new WP_Screen('dashboard', 'dashboard');
+		return new WP_Screen( $GLOBALS['ffpl_test_screen_base'], $GLOBALS['ffpl_test_screen_base'] );
 	}
 }
 $GLOBALS['mock_attempts'] = 0;

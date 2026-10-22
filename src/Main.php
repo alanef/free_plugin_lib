@@ -22,9 +22,18 @@ class Main {
 	 */
 	private static $version = '1.3.1';
 	/**
+	 * The host plugin's settings page as passed: a menu slug ('stop-user-enumeration'), a hook
+	 * suffix ('settings_page_contact-form-settings') or '' for a plugin with no settings page.
+	 *
 	 * @var mixed
 	 */
 	private $page;
+	/**
+	 * The menu slug part of $page, compared with $_GET['page'].
+	 *
+	 * @var string
+	 */
+	private $page_slug;
 	/**
 	 * @var \WP_Screen|null
 	 */
@@ -43,6 +52,7 @@ class Main {
 		$this->plugin_shortname = $plugin_shortname;
 		self::$last_plugin_shortname = $plugin_shortname;
 		$this->page = $page;
+		$this->page_slug = (string) preg_replace('/^.*_page_/', '', (string) $page);
 		$this->plugin_file = $plugin_file;
 		$this->settings_page = $settings_page;
 		$this->plugin_name = $plugin_name;
@@ -102,11 +112,16 @@ class Main {
 	}
 
 	public function handle_optin_page() {
+		// admin_init also runs for admin-ajax.php, and a redirect there breaks every AJAX call on the site
+		if (wp_doing_ajax() || '' === $this->page_slug || !current_user_can('manage_options')) {
+			return;
+		}
+
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is page routing, not form processing
 		$current_page = isset($_GET['page']) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
 		$option = get_site_option($this->plugin_shortname . '_form_rendered');
 		// 'rendering' means the opt-in screen was shown but left without a choice, so ask again
-		if (in_array($option, array('pending', 'rendering'), true) && $current_page === $this->page) {
+		if (in_array($option, array('pending', 'rendering'), true) && $current_page === $this->page_slug) {
 			update_site_option($this->plugin_shortname . '_form_rendered', 'rendering');
 			wp_safe_redirect(admin_url('options-general.php?page=ffpl-opt-in-' . $this->plugin_shortname));
 			exit;
@@ -360,8 +375,11 @@ class Main {
 			'plugins',
 			'tools',
 			'options-general',
-			'settings_page_' . $this->page,
 		);
+		if ('' !== $this->page_slug) {
+			// A hook suffix is already the screen base; a menu slug is assumed to be under Settings
+			$display_on_pages[] = $this->page === $this->page_slug ? 'settings_page_' . $this->page : $this->page;
+		}
 
 		if (!in_array($page, $display_on_pages, true)) {
 			return;

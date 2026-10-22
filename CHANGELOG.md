@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Fixed
+- **Do not ship 1.3.1.** In a plugin that passes an empty settings page (Remove Site Health From Dashboard does), 1.3.1 redirected every admin request to the opt-in screen, AJAX included, until the user clicked Allow or Skip. That broke the heartbeat and every other plugin's AJAX, and the opt-in and dismiss requests too, so the user could not get out through the notice either. Because one copy of the class serves every plugin on a site, any plugin bundling 1.3.1 could cause this for RSHFD users. The redirect to the opt-in screen now happens only for an administrator, outside AJAX, on the plugin's own settings page, and never for a plugin with no settings page.
+- Plugins that pass a hook suffix as their settings page (`settings_page_contact-form-settings`, `team_members_page_meet-my-team-settings`, …) never redirected to the opt-in screen, and the notice never showed on their own settings screen, because the suffix was compared with the bare menu slug. The library now takes the slug from either form. Affected: Clean and Simple Contact Form, Load HTML Files, Meet My Team, Simple Shortcode for Google Maps.
+
+### Changed
+- On a site running several plugins that bundle the library, each plugin now asks once for its own opt-in choice. Before 1.3.1, only the plugin that loaded last ever recorded a choice, so the others have none stored and will ask. Choices already recorded are kept.
+
 ## [1.3.1] - 2026-10-22
 ### Fixed
 - The opt-in setup notice could not be dismissed: it disappeared when closed and came back on the next page load. The dismiss handler compared the posted shortname, lowercased by `sanitize_key()`, against the host plugin's mixed-case shortname (`SUE`, `SWEGTS`, …), so the dismissal was never saved. Shortnames are now compared in their sanitized form. The user meta key is unchanged (`{shortname}_notice_dismissed`), so dismissals and opt-in choices already stored are still honoured.
