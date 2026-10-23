@@ -263,6 +263,7 @@ if ( ! function_exists( 'wp_unslash' ) ) {
 // HTTP & API
 if ( ! function_exists( 'wp_remote_post' ) ) {
 	function wp_remote_post( $url, $args = array() ) {
+		$GLOBALS['ffpl_test_last_post'] = array( 'url' => $url, 'args' => $args );
 		return [ 'response' => [ 'code' => 200 ] ];
 	}
 }

@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Fixed
+- In Simple Shortcode for Google Maps, Meet My Team, Load HTML Files and Remove Site Health From Dashboard, "Allow & Continue" subscribed nobody. Those plugins pass a `-Free` shortname (`SSFGM-Free`, …), which had no entry in the plugin map, so nothing was sent to the mailing list and the choice was recorded as opted out, with no error shown. A `-Free` shortname now uses the plugin ID of the name without the suffix. Stored option and meta keys are unchanged.
+
+### Security
+- Skipping the opt-in now also requires the `manage_options` capability, as well as the per-user nonce. This was not exploitable before, because the nonce is only rendered for administrators, but the check is now explicit.
+
 ## [1.3.2] - 2026-10-23
 ### Fixed
 - **Do not ship 1.3.1.** In a plugin that passes an empty settings page (Remove Site Health From Dashboard does), 1.3.1 redirected every admin request to the opt-in screen, AJAX included, until the user clicked Allow or Skip. That broke the heartbeat and every other plugin's AJAX, and the opt-in and dismiss requests too, so the user could not get out through the notice either. Because one copy of the class serves every plugin on a site, any plugin bundling 1.3.1 could cause this for RSHFD users. The redirect to the opt-in screen now happens only for an administrator, outside AJAX, on the plugin's own settings page, and never for a plugin with no settings page.

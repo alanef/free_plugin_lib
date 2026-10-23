@@ -292,4 +292,20 @@ class OptInFlowTest extends TestCase
 
 		$this->assertFalse(get_site_option('SUE_form_rendered'));
 	}
+
+	public function testSkipNeedsAnAdministrator()
+	{
+		$main = $this->make_main('SUE', 'stop-user-enumeration');
+		update_site_option('SUE_form_rendered', 'rendering');
+		$_GET['ffpl_skip'] = 'valid_nonce';
+
+		$GLOBALS['ffpl_test_can_manage'] = false;
+		$this->assertNull($this->run_handler(array($main, 'handle_skip_optin')));
+		$this->assertSame('rendering', get_site_option('SUE_form_rendered'));
+
+		// Positive control: same request as an administrator
+		$GLOBALS['ffpl_test_can_manage'] = true;
+		$this->assertInstanceOf(\FFPL_Test_Redirect::class, $this->run_handler(array($main, 'handle_skip_optin')));
+		$this->assertSame('optout', get_site_option('SUE_form_rendered'));
+	}
 }

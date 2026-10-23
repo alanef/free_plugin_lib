@@ -93,7 +93,7 @@ class Main {
 	}
 
 	public function handle_skip_optin() {
-		if (!isset($_GET['ffpl_skip'])) {
+		if (!isset($_GET['ffpl_skip']) || !current_user_can('manage_options')) {
 			return;
 		}
 

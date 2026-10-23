@@ -31,8 +31,10 @@ class Email {
 		// Allow filtering of plugin map for testing/extensions
 		$plugin_map = apply_filters( 'ffpl_plugin_map', self::$plugin_map );
 
-		// Get plugin ID from map
-		$plugin_id = $plugin_map[$this->plugin_shortname] ?? null;
+		// Get plugin ID from map. Free builds pass e.g. 'SSFGM-Free', which shares its ID with 'SSFGM'
+		$plugin_id = $plugin_map[$this->plugin_shortname]
+			?? $plugin_map[preg_replace('/-Free$/', '', (string) $this->plugin_shortname)]
+			?? null;
 		if (!$plugin_id) {
 			return false;
 		}
