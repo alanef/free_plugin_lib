@@ -20,7 +20,7 @@ class Main {
 	/**
 	 * @var string
 	 */
-	private static $version = '1.3.2';
+	private static $version = '1.3.3';
 	/**
 	 * The host plugin's settings page as passed: a menu slug ('stop-user-enumeration'), a hook
 	 * suffix ('settings_page_contact-form-settings') or '' for a plugin with no settings page.

@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.3.3] - 2026-10-23
 ### Fixed
 - In Simple Shortcode for Google Maps, Meet My Team, Load HTML Files and Remove Site Health From Dashboard, "Allow & Continue" subscribed nobody. Those plugins pass a `-Free` shortname (`SSFGM-Free`, …), which had no entry in the plugin map, so nothing was sent to the mailing list and the choice was recorded as opted out, with no error shown. A `-Free` shortname now uses the plugin ID of the name without the suffix. Stored option and meta keys are unchanged.
 
